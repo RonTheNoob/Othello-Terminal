@@ -4,30 +4,28 @@ import kotlin.system.exitProcess
 
 // Reversi
 
+const val error = "That is not a valid move. Type the x digit (1-8), then the y digit (1-8). \nFor example, 81 will be the top-right corner."
+
 fun drawBoard(board: Array<MutableList<Char>>) {
-    // This function prints out the board that it was passed. Returns None.
+    // This function prints out/draws the board. Doesn't return anything.
 
     val horizontalLine = "  +---+---+---+---+---+---+---+---+"
-    val verticalLine = "  |   |   |   |   |   |   |   |   |"
 
-    println("    1   2   3   4   5   6   7   8")
     println(horizontalLine)
     for (y in 0..7) {
-        println(verticalLine)
         print("${y + 1} ")
         for (x in 0..7) {
             print("| ${board[x][y]}")
             print(" ")
         }
         println("|")
-        println(verticalLine)
         println(horizontalLine)
     }
     println("    1   2   3   4   5   6   7   8")
 }
 
 fun resetBoard(board: Array<MutableList<Char>>) {
-    // Blanks out the board it is passed, except for the original starting position.
+    // Blanks out/resets the board it is passed, except for the original starting position/starting pieces.
     for (x in 0..7) {
         for (y in 0..7) {
             board[x][y] = ' '
@@ -166,12 +164,12 @@ fun enterPlayerTile(): Pair<Char, Char> {
 }
 
 fun whoGoesFirst(): String {
-    // Randomly choose the player who goes first.
+    // Randomly choose the player who will go first.
     return if (Random.nextInt(2) == 0) "computer" else "player"
 }
 
 fun playAgain(): Boolean {
-    // This function returns True if the player wants to play again, otherwise it returns False.
+    // This function will return True if the player wants to play again, False if no.
     println("Do you want to play again? (yes or no)")
     val inputLine = readlnOrNull() ?: ""
     return inputLine.lowercase(Locale.getDefault()).startsWith("y")
@@ -182,6 +180,7 @@ fun makeMove(board: Array<MutableList<Char>>, tile: Char, xStart: Int, yStart: I
     // Returns False if this is an invalid move, True if it is valid.
     val tilesToFlipAny = isValidMove(board, tile, xStart, yStart)
     if (tilesToFlipAny == false) {
+        println(error)
         return false
     }
     @Suppress("UNCHECKED_CAST")
@@ -231,15 +230,14 @@ fun getPlayerMove(board: Array<MutableList<Char>>, playerTile: Char): Any {
                 return Pair(x, y)
             }
         } else {
-            println("That is not a valid move. Type the x digit (1-8), then the y digit (1-8).")
-            println("For example, 81 will be the top-right corner.")
+            println(error)
         }
     }
 }
 
 fun getComputerMove(board: Array<MutableList<Char>>, computerTile: Char): Pair<Int, Int> {
-    // Given a board and the computer's tile, determine where to
-    // move and return that move as a [x, y] list.
+    // Get the computer's move
+
     val possibleMoves = getValidMoves(board, computerTile).toMutableList()
 
     // randomize the order of the possible moves
